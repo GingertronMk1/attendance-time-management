@@ -47,7 +47,7 @@ test('user can delete their account', function () {
     $user = User::factory()->create();
 
     $this->actingAs($user);
-    $this->expect($user->deleted_at)->toBeNull();
+    $this->expect($user->fresh()->deleted_at)->toBeNull();
 
     $response = Volt::test('settings.delete-user-form')
         ->set('password', 'password')
