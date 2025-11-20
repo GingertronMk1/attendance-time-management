@@ -1,4 +1,4 @@
-@php
+<?php
 
 use Illuminate\Support\Facades\Auth;
 use Livewire\Volt\Component;
@@ -7,9 +7,10 @@ new class extends Component {
     public function toggleShift(): void
     {
         Auth::user()->toggleShift();
+        $this->dispatch('shift-updated');
     }
 }
-@endphp
+?>
 
 <flux:button
     variant="primary"
