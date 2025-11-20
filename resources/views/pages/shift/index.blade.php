@@ -2,16 +2,7 @@
     'shifts' => 'array'
 ])
 <x-layouts.app>
-    <form action="{{ route('toggle-shift') }}" method="POST">
-        @csrf
-        <flux:button
-            variant="primary"
-            type="submit"
-            :color="auth()->user()?->hasOpenShift() ? 'red' : 'green'"
-        >
-            {{ auth()->user()?->hasOpenShift() ? 'End' : 'Start' }} Shift
-        </flux:button>
-    </form>
+    <livewire:shift.toggle-shift-form />
 
     <div class="flex flex-col divide-y *:py-2">
 
