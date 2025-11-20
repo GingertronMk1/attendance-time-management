@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Test Admin',
             'email' => 'admin@atm.test',
+            'admin_type' => 'superadmin'
         ]);
 
         $userCount = 10;
