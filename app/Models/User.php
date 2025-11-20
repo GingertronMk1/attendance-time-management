@@ -3,7 +3,10 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -64,5 +67,36 @@ class User extends Authenticatable
             ->take(2)
             ->map(fn ($word) => Str::substr($word, 0, 1))
             ->implode('');
+    }
+
+    public function shifts(): HasMany
+    {
+        return $this->hasMany(Shift::class)->orderBy('start');
+    }
+
+    public function currentShift(): HasOne
+    {
+        return $this->shifts()->latest()->one();
+    }
+
+    public function hasOpenShift(): bool
+    {
+        return $this->shifts()->whereNull('end')->exists();
+    }
+
+    public function toggleShift(): void
+    {
+        if ($this->hasOpenShift()) {
+            $this->shifts()->whereNull('end')->first()->update(['end' => now()]);
+        } else {
+            $this->startShift();
+        }
+    }
+
+    public function startShift(): Shift
+    {
+        return $this->shifts()->create([
+            'start' => CarbonImmutable::now(),
+        ]);
     }
 }

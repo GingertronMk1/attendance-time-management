@@ -2,7 +2,11 @@
 
 namespace App\Providers;
 
+use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Fortify\Features;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +23,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        if (!app()->isProduction()) {
+            Model::shouldBeStrict();
+        }
+
+        Date::use(CarbonImmutable::class);
     }
 }
