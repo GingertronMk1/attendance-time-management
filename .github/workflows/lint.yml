@@ -34,4 +34,4 @@ jobs:
           npm install
 
       - name: Run Pint
-        run: vendor/bin/pint --test -v --parallel
+        run: vendor/bin/pint -v --test --parallel
