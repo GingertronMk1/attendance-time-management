@@ -3,7 +3,11 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -14,9 +18,10 @@ class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory;
+
     use Notifiable;
-    use TwoFactorAuthenticatable;
     use SoftDeletes;
+    use TwoFactorAuthenticatable;
 
     /**
      * The attributes that are mass assignable.
@@ -39,6 +44,10 @@ class User extends Authenticatable
         'two_factor_secret',
         'two_factor_recovery_codes',
         'remember_token',
+    ];
+
+    protected $with = [
+        'manager',
     ];
 
     /**
@@ -64,5 +73,54 @@ class User extends Authenticatable
             ->take(2)
             ->map(fn ($word) => Str::substr($word, 0, 1))
             ->implode('');
+    }
+
+    public function shifts(): HasMany
+    {
+        return $this->hasMany(Shift::class)->orderBy('start');
+    }
+
+    public function currentShift(): HasOne
+    {
+        return $this->shifts()->latest()->one();
+    }
+
+    public function hasOpenShift(): bool
+    {
+        return $this->shifts()->whereNull('end')->exists();
+    }
+
+    public function toggleShift(): void
+    {
+        if ($this->hasOpenShift()) {
+            $this->shifts()->whereNull('end')->first()->update(['end' => now()]);
+        } else {
+            $this->startShift();
+        }
+    }
+
+    public function startShift(): Shift
+    {
+        return $this->shifts()->create([
+            'start' => CarbonImmutable::now(),
+        ]);
+    }
+
+    public function reportsTo(User $user): bool
+    {
+        $manager = $this->manager;
+        while ($manager) {
+            if ($manager->id === $user->id) {
+                return true;
+            }
+            $manager = $manager->manager;
+        }
+
+        return false;
+    }
+
+    public function manager(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'manager_id');
     }
 }

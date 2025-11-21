@@ -15,6 +15,9 @@
                 <flux:navbar.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                     {{ __('Dashboard') }}
                 </flux:navbar.item>
+                <flux:navbar.item icon="layout-grid" :href="route('shift.index')" :current="request()->routeIs('shift.index')" wire:navigate>
+                    {{ __('Shifts') }}
+                </flux:navbar.item>
             </flux:navbar>
 
             <flux:spacer />
@@ -99,7 +102,10 @@
             <flux:navlist variant="outline">
                 <flux:navlist.group :heading="__('Platform')">
                     <flux:navlist.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
-                    {{ __('Dashboard') }}
+                        {{ __('Dashboard') }}
+                    </flux:navlist.item>
+                    <flux:navlist.item icon="layout-grid" :href="route('shift.index')" :current="request()->routeIs('shift.index')" wire:navigate>
+                        {{ __('Shifts') }}
                     </flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>

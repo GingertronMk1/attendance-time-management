@@ -10,4 +10,8 @@ class {{ class }} extends Model
 {
     {{ factory }}
     use SoftDeletes;
+
+    protected $fillable = [];
+
+    protected $with = [];
 }
