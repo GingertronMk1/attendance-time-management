@@ -47,6 +47,10 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    protected $with = [
+        'manager'
+    ];
+
     /**
      * Get the attributes that should be cast.
      *
@@ -103,16 +107,16 @@ class User extends Authenticatable
         ]);
     }
 
-    public function reports(): Collection
+    public function reportsTo(User $user): bool
     {
-        $reports = new Collection();
-        $directReports = self::query()->where('users.manager_id', $this->id)->get();
-        foreach ($directReports as $report) {
-            $reports->push($report);
-            $reports->merge($report->reports());
+        $manager = $this->manager;
+        while ($manager) {
+            if ($manager->id === $user->id) {
+                return true;
+            }
+            $manager = $manager->manager;
         }
-
-        return $reports;
+        return false;
     }
 
     public function manager(): BelongsTo

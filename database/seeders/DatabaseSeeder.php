@@ -25,15 +25,29 @@ class DatabaseSeeder extends Seeder
             'admin_type' => 'superadmin'
         ]);
 
-        $userCount = 10;
+        $userCount = 5;
         $this->command->info("Creating {$userCount} users");
         User::factory($userCount)->create();
 
+        $this->command->info('Creating hierarchy');
+        for ($i = 0; $i < $userCount; $i++) {
+            $this->command->info("Creating hierarchy level {$i}");
+            $this->command->withProgressBar(
+                User::all(),
+                function (User $user) use ($userCount, $i) {
+                    User::factory($userCount - $i)->create(['manager_id' => $user->id]);
+                }
+            );
+            $this->command->newLine();
+        }
 
         $this->command->info("Giving each user 10 shifts and a new one started");
-        User::query()->each(function (User $user) {
-            Shift::factory(10)->create(['user_id' => $user->id]);
-            $user->startShift();
-        });
+        $this->command->withProgressBar(
+            User::all(),
+            function (User $user) {
+                Shift::factory(3)->create(['user_id' => $user->id]);
+                $user->startShift();
+            }
+        );
     }
 }
