@@ -1,6 +1,3 @@
-@props([
-    'shifts' => 'array'
-])
 <x-layouts.app>
     <livewire:shift.toggle-shift-form />
 
