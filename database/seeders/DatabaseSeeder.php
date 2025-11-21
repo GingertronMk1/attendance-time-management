@@ -14,7 +14,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        if (!app()->isLocal()) {
+        if (! app()->isLocal()) {
             return;
         }
 
@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Test Admin',
             'email' => 'admin@atm.test',
-            'admin_type' => 'superadmin'
+            'admin_type' => 'superadmin',
         ]);
 
         $userCount = 5;
@@ -41,7 +41,7 @@ class DatabaseSeeder extends Seeder
             $this->command->newLine();
         }
 
-        $this->command->info("Giving each user 10 shifts and a new one started");
+        $this->command->info('Giving each user 10 shifts and a new one started');
         $this->command->withProgressBar(
             User::all(),
             function (User $user) {

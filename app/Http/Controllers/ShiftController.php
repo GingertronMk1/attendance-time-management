@@ -14,7 +14,7 @@ class ShiftController extends Controller
     public function index()
     {
         return view('pages.shift.index', [
-            'shifts' => Shift::query()->orderBy('start')->get()
+            'shifts' => Shift::query()->orderBy('start')->get(),
         ]);
     }
 

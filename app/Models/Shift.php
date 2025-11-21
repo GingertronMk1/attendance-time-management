@@ -11,6 +11,7 @@ class Shift extends Model
 {
     /** @use HasFactory<\Database\Factories\ShiftFactory> */
     use HasFactory;
+
     use SoftDeletes;
 
     protected $fillable = [
@@ -19,7 +20,7 @@ class Shift extends Model
     ];
 
     protected $with = [
-        'user'
+        'user',
     ];
 
     protected $casts = [

@@ -20,6 +20,7 @@ class ShiftFactory extends Factory
     public function definition(): array
     {
         $start = new CarbonImmutable($this->faker->dateTimeBetween());
+
         return [
             'user_id' => User::query()->inRandomOrder()->first()->id,
             'start' => $start,
